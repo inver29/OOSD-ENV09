@@ -1,0 +1,43 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in .env.docker}
+    volumes:
+      - sql_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' -b -o /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 25
+      start_period: 30s
+  web:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      APP_DB_SERVER: db,1433
+      APP_DB_NAME: ENV09
+      APP_DB_DRIVER: ODBC Driver 18 for SQL Server
+      APP_DB_TRUSTED: "false"
+      APP_DB_USER: sa
+      APP_DB_PASSWORD: ${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in .env.docker}
+      APP_SEED_DEMO: ${APP_SEED_DEMO:-false}
+      APP_DEMO_PASSWORD: ${APP_DEMO_PASSWORD:-}
+      APP_COOKIE_SECURE: "false"
+      APP_OTEL_ENDPOINT: ${APP_OTEL_ENDPOINT:-}
+    volumes:
+      - uploads:/app/backend/storage/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=3)"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+volumes:
+  sql_data:
+  uploads:

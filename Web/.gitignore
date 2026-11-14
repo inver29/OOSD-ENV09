@@ -1,0 +1,14 @@
+.venv/
+.env
+.env.docker
+.ruff_cache/
+*.tsbuildinfo
+node_modules/
+frontend/dist/
+__pycache__/
+.pytest_cache/
+*.pyc
+backend/storage/
+*.log
+.coverage
+test-results/

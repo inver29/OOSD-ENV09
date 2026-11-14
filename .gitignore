@@ -1,0 +1,14 @@
+# Cấu hình và bí mật cục bộ
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Báo cáo nộp riêng, bản sao và tệp tạm
+/Bao cao cuoi ky ENV09.docx
+/backup/
+~$*
+*.bak
+*.mdf
+*.ndf
+*.ldf

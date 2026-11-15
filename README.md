@@ -12,14 +12,14 @@
 - Nền tảng: website dùng React và TypeScript cho giao diện, Python và FastAPI cho API.
 - Cơ sở dữ liệu: Microsoft SQL Server 2022, kết nối qua SQLAlchemy và ODBC Driver 17 hoặc 18.
 - Môi trường chạy: Python 3.12 trở lên, Node.js 22 và PowerShell trên Windows.
-- Công cụ mô hình hóa và kiểm thử: draw.io, pytest và Playwright.
+- Công cụ mô hình hóa: draw.io. Đợt kiểm chứng dùng pytest và Playwright.
 
 ## 2. Nội dung đã thực hiện
 
 - Phân tích nghiệp vụ mượn tài sản giữa các đơn vị cùng tổ chức với ba vai trò: thành viên, quản lý tài sản và quản trị hệ thống. Mỗi tài khoản có một vai trò.
-- Dựng sơ đồ use case, lớp, trạng thái, tuần tự, hoạt động, ERD, kiến trúc và thiết kế giao diện. Tệp draw.io và ảnh tương ứng nằm trong [Sơ đồ](S%C6%A1%20%C4%91%E1%BB%93/).
-- Thiết kế 13 bảng và các ràng buộc khóa, thời gian, trạng thái trong SQL Server. Tập lệnh cài mới nằm trong [ENV09.sql](ENV09.sql) và [Web/sql/001_schema.sql](Web/sql/001_schema.sql). Các tập lệnh nâng cấp nằm trong [Web/sql](Web/sql/).
-- Xây dựng frontend trong [Web/frontend](Web/frontend/) và backend trong [Web/backend](Web/backend/). Các thao tác xét duyệt, giao nhận và thu hồi kiểm tra quyền, trạng thái và dữ liệu liên quan trước khi lưu.
+- Dựng sơ đồ nghiệp vụ, ERD, kiến trúc và thiết kế giao diện. Tệp draw.io mang số hình trong báo cáo. [Sơ đồ](Images/S%C6%A1%20%C4%91%E1%BB%93/) · [Giao diện](Images/Giao%20di%E1%BB%87n/)
+- Thiết kế 13 bảng và các ràng buộc khóa, thời gian, trạng thái trong SQL Server. Tập lệnh `ENV09.sql` dùng để tạo mới hoặc nâng cấp database. [ENV09.sql](Project-WebSite/SQL/ENV09.sql)
+- Xây dựng frontend trong [Project-WebSite/frontend](Project-WebSite/frontend/) và backend trong [Project-WebSite/backend](Project-WebSite/backend/). Các thao tác xét duyệt, giao nhận và thu hồi kiểm tra quyền, trạng thái và dữ liệu liên quan trước khi lưu.
 
 ## 3. Kết quả đạt được
 
@@ -27,22 +27,16 @@
 - **Quản lý tài sản:** xét duyệt hồ sơ tài sản và phiếu mượn của đơn vị mình phụ trách, lập biên bản giao nhận, xử lý sự cố, đánh giá vòng đời và xác minh nhu cầu thuộc đơn vị mình. Khi quản lý mượn tài sản của đơn vị khác, quản lý đơn vị sở hữu xét duyệt.
 - **Quản trị hệ thống:** quản lý tài khoản, đơn vị, địa điểm, loại tài sản và chính sách mượn. Sau khi đăng nhập, quản trị đi thẳng vào trang Quản trị hệ thống.
 - **Chỉ số tránh mua mới:** đối chiếu phương án ban đầu và kết quả xác minh sau hoàn trả. Chỉ số tính tỷ lệ nhu cầu tránh mua mới trong các nhu cầu đã xác minh có dự định mua, theo kỳ và đơn vị được chọn.
-- Đợt kiểm chứng ngày 14/11/2026 ghi nhận 65/65 ca backend và 14/14 kịch bản trình duyệt đạt trên SQL Server thử. [Kết quả kiểm thử](Web/docs/KIEM_THU.md)
+- Đợt kiểm chứng ngày 15/11/2026 ghi nhận 69/69 ca backend và 14/14 kịch bản trình duyệt đạt trên SQL Server thử.
 
-## 4. Lỗi gặp phải
-
-- Hai yêu cầu xét duyệt đồng thời có thể tranh cùng một tài sản. Backend khóa bản ghi tài sản và kiểm tra lại trạng thái trong giao dịch trước khi duyệt.
-- Sau khi sửa biên bản, một bên có thể vẫn mở phiên bản cũ. Hệ thống yêu cầu hai bên xác nhận cùng phiên bản trước khi hoàn tất giao nhận.
-- Khi thu hồi có thể còn phiếu chưa giao hoặc tài sản đang được mượn. Hệ thống lưu thông báo trước khi xóa phiếu chưa giao. Với phiếu đã giao, tài sản chuyển sang Chờ thu hồi và hồ sơ ẩn sau khi hoàn tất nhận trả.
-
-## 5. Hướng dẫn chạy chương trình
+## 4. Hướng dẫn chạy chương trình
 
 ### Bước 1. Cấu hình kết nối SQL Server
 
 Mở CMD trong thư mục gốc của repository. Tạo tệp cấu hình cục bộ nếu máy chưa có:
 
 ```cmd
-cd /d Web
+cd /d Project-WebSite
 if not exist .env copy .env.example .env
 notepad .env
 ```
@@ -51,11 +45,11 @@ Sửa APP_DB_SERVER và APP_DB_DRIVER theo SQL Server và driver trên máy. V�
 
 ### Bước 2. Khởi tạo cơ sở dữ liệu và cài chương trình
 
-Chạy từ thư mục Web:
+Chạy các lệnh sau trong `Project-WebSite`.
 
 ```cmd
 python -m venv .venv
-.venv\Scripts\python.exe -m pip install -r backend\requirements-dev.txt
+.venv\Scripts\python.exe -m pip install -r backend\requirements.txt
 .venv\Scripts\python.exe -m backend.app.bootstrap --seed
 cd frontend
 npm ci
@@ -63,7 +57,7 @@ npm run build
 cd ..
 ```
 
-Lệnh bootstrap tạo cấu trúc và nạp dữ liệu mẫu khi chưa có tài khoản. Xem tập lệnh tạo bảng tại [ENV09.sql](ENV09.sql).
+Lệnh bootstrap áp dụng cấu trúc hoặc nâng cấp database, sau đó nạp dữ liệu mẫu khi chưa có tài khoản. [ENV09.sql](Project-WebSite/SQL/ENV09.sql)
 
 ### Bước 3. Khởi chạy và thử nghiệp vụ
 
@@ -73,8 +67,8 @@ Lệnh bootstrap tạo cấu trúc và nạp dữ liệu mẫu khi chưa có tà
 
 Mở [website ENV09](http://127.0.0.1:8000). Dùng mật khẩu demo đã cấu hình và các tài khoản mẫu `an`, `ql.hcm` hoặc `admin` để xem theo từng vai trò. Để thử luồng mượn giữa hai đơn vị, đăng nhập bằng thành viên, chọn hiện vật của đơn vị khác, gửi phiếu rồi dùng tài khoản quản lý của đơn vị sở hữu để xét duyệt. Mở hai hồ sơ trình duyệt riêng để giữ hai phiên đăng nhập khi thử giao nhận.
 
-Xem thêm [hướng dẫn cài đặt và vận hành](Web/README.md) và [luồng chức năng](Web/docs/LUONG_CHUC_NANG.md).
+Xem thêm [hướng dẫn cài đặt và vận hành](Project-WebSite/README.md).
 
-## Ảnh giao diện minh họa
+## Ảnh website trong Chương VII
 
-[Tổng quan](Web/docs/anh/dashboard-desktop.png) · [Khám phá tài sản](Web/docs/anh/catalog-desktop.png) · [Xét duyệt yêu cầu](Web/docs/anh/approval-popup.png) · [Hoàn trả](Web/docs/anh/loan-return-desktop.png) · [Chỉ số tránh mua mới](Web/docs/anh/effectiveness-desktop.png) · [Quản trị](Web/docs/anh/admin-filters-live-desktop.png)
+[Tổng quan](Images/%E1%BA%A2nh%20Website/01-tong-quan.png) · [Khám phá tài sản](Images/%E1%BA%A2nh%20Website/02-kham-pha.png) · [Đặt mượn](Images/%E1%BA%A2nh%20Website/03-dat-muon.png) · [Xét duyệt](Images/%E1%BA%A2nh%20Website/04-xet-duyet.png) · [Giao nhận](Images/%E1%BA%A2nh%20Website/05-giao-nhan.png) · [Chỉ số tránh mua mới](Images/%E1%BA%A2nh%20Website/06-chi-so.png) · [Quản trị](Images/%E1%BA%A2nh%20Website/07-quan-tri.png)

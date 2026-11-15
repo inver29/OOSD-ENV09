@@ -1,6 +1,6 @@
 from datetime import UTC, datetime, timedelta
 
-PENDING = {"CHO_DUYET", "DA_DUYET"}
+PENDING = {"CHO_DUYET", "CHO_BAN_GIAO"}
 HOLDING = {"DANG_MUON", "CHO_XAC_NHAN_TRA"}
 OPEN = PENDING | HOLDING
 ROLES = {"THANH_VIEN", "QUAN_LY", "QUAN_TRI"}

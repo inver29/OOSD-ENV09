@@ -40,6 +40,7 @@ def listing(
     if status == "OVERDUE":
         query = query.where(Loan.status.in_(domain.HOLDING), Loan.end_at < domain.now())
     elif status:
+        status = {"DA_DUYET": "CHO_BAN_GIAO", "DA_DONG": "DA_HOAN_TRA"}.get(status, status)
         query = query.where(Loan.status == status)
     if q:
         query = query.where(
@@ -78,7 +79,7 @@ def detail(loan_id: int, db: Db, actor: Actor):
     need = db.get(Need, loan.need_id) if loan.need_id else None
     result["need"] = (
         need_view(need)
-        if need and loan.status == "DA_DONG" and can_read_need(actor, need)
+        if need and loan.status == "DA_HOAN_TRA" and can_read_need(actor, need)
         else None
     )
     return result

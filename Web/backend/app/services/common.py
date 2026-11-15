@@ -102,7 +102,7 @@ def can_read_need(user, need):
 def reservations(db, asset_id: int, exclude_id: int | None = None):
     query = select(Loan).where(
         Loan.asset_id == asset_id,
-        Loan.status.in_(domain.HOLDING | {"DA_DUYET", "DA_DONG"}),
+        Loan.status.in_(domain.HOLDING | {"CHO_BAN_GIAO", "DA_HOAN_TRA"}),
     )
     if exclude_id:
         query = query.where(Loan.id != exclude_id)
@@ -111,7 +111,7 @@ def reservations(db, asset_id: int, exclude_id: int | None = None):
 
 def active_checkout_condition():
     """An approved voucher occupies the whole item until cancellation/expiry/return."""
-    return Loan.status.in_(domain.HOLDING | {"DA_DUYET"})
+    return Loan.status.in_(domain.HOLDING | {"CHO_BAN_GIAO"})
 
 
 def has_checkout(asset_id=Asset.id):
@@ -152,7 +152,7 @@ def blocked_end(loan):
 def check_availability(db, asset_id, start, end, buffer_hours, exclude_id=None):
     requested_end = end + timedelta(hours=buffer_hours)
     for loan in reservations(db, asset_id, exclude_id):
-        if loan.status == "DA_DUYET" and loan.pickup_deadline <= domain.now():
+        if loan.status == "CHO_BAN_GIAO" and loan.pickup_deadline <= domain.now():
             continue
         if loan.status in domain.HOLDING and loan.end_at <= domain.now():
             raise domain.BusinessError(
@@ -258,7 +258,7 @@ def asset_view(asset: Asset, checkout_status=None):
     elif status != "CHO_THU_HOI":
         if checkout_status in domain.HOLDING:
             status = "DA_DUOC_MUON"
-        elif status == "CHO_CHIA_SE" and checkout_status == "DA_DUYET":
+        elif status == "CHO_CHIA_SE" and checkout_status == "CHO_BAN_GIAO":
             status = "CHO_BAN_GIAO"
     return dict(
         id=asset.id,

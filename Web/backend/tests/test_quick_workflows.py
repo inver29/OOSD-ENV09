@@ -22,7 +22,7 @@ def quick_delivery(env):
     assert response.status_code == 200, response.text
     record = response.json()
     assert record["giver_confirmed_at"] and not record["receiver_confirmed_at"]
-    assert member.get(f"/api/loans/{loan['id']}").json()["status"] == "DA_DUYET"
+    assert member.get(f"/api/loans/{loan['id']}").json()["status"] == "CHO_BAN_GIAO"
     assert confirm(member, loan, record).status_code == 200
     assert member.get(f"/api/loans/{loan['id']}").json()["status"] == "DANG_MUON"
     return member, manager, loan
@@ -51,7 +51,7 @@ def test_quick_handover_and_return_keep_two_independent_signatures(env, conditio
     assert confirm(env["login"]("ql.dn"), loan, record).status_code == 403
     assert confirm(manager, loan, record).status_code == 200
     finished = member.get(path).json()
-    assert finished["status"] == "DA_DONG" and finished["returned_at"]
+    assert finished["status"] == "DA_HOAN_TRA" and finished["returned_at"]
     assert finished["asset"]["status"] == asset_status
 
 
@@ -76,7 +76,7 @@ def test_return_edit_signs_editor_and_invalidates_other_party(env):
     assert member.get(path).json()["status"] == "CHO_XAC_NHAN_TRA"
     assert confirm(member, loan, record).status_code == 409
     assert confirm(member, loan, updated).status_code == 200
-    assert member.get(path).json()["status"] == "DA_DONG"
+    assert member.get(path).json()["status"] == "DA_HOAN_TRA"
 
 
 def test_unchanged_manager_review_does_not_erase_borrower_signature(env):
@@ -90,7 +90,7 @@ def test_unchanged_manager_review_does_not_erase_borrower_signature(env):
     )
     assert saved.status_code == 200, saved.text
     assert saved.json()["status"] == "HOAN_TAT" and saved.json()["version"] == record["version"]
-    assert member.get(path).json()["status"] == "DA_DONG"
+    assert member.get(path).json()["status"] == "DA_HOAN_TRA"
 
 
 def test_invalid_return_is_atomic_and_scoped(env):

@@ -197,7 +197,7 @@ Trạng thái mượn hiển thị của tài sản được tính từ phiếu 
 - Biên bản: Chưa xác nhận (chưa bên nào ký) → Chờ xác nhận (đã có một bên) → Hoàn tất (đủ hai bên cùng phiên bản); Đã hủy khi bị hủy/mở lại theo quy định.
 - Nhu cầu: Bản nháp chỉ dành hồ sơ cũ chưa gửi; Chờ xác minh → Đã xác minh hoặc Từ chối. Thay đổi kết quả đã xác minh sẽ về Chờ xác minh.
 
-Mã SQL DA_DUYET hiển thị là Chờ bàn giao; CHO_XAC_NHAN_TRA hiển thị là Chờ xác nhận trả. Tab, dropdown, nhãn và tiến độ dùng chung tên. Quá hạn trả là cảnh báo bổ sung, vẫn hiển thị bước đang xử lý; không tự đóng phiếu hoặc giải phóng hiện vật.
+Cột `PhieuMuon.TrangThai` lưu mã theo nhãn hiển thị: Chờ duyệt (`CHO_DUYET`), Chờ bàn giao (`CHO_BAN_GIAO`), Đang mượn (`DANG_MUON`), Chờ xác nhận trả (`CHO_XAC_NHAN_TRA`), Đã hoàn trả (`DA_HOAN_TRA`), Từ chối (`TU_CHOI`), Đã hủy (`DA_HUY`) và Hết hạn nhận (`HET_HAN_NHAN`). Cảnh báo Quá hạn trả được tính riêng và hiển thị cùng bước đang xử lý.
 
 Hủy/từ chối/hết hạn vẫn giữ những bước đã đi qua trên thanh tiến độ. Tài sản chỉ mở lại sau khi phiếu thực sự chuyển sang Hết hạn nhận qua tác vụ máy chủ (mỗi 30 giây), đồng nhất với trạng thái phiếu; không bàn giao khi đã qua hạn.
 

@@ -83,8 +83,8 @@ def listing(
             func.coalesce(Loan.returned_at, Loan.end_at),
         )
         blocks = or_(
-            Loan.status.in_(domain.HOLDING | {"DA_DONG"}),
-            and_(Loan.status == "DA_DUYET", Loan.pickup_deadline > domain.now()),
+            Loan.status.in_(domain.HOLDING | {"DA_HOAN_TRA"}),
+            and_(Loan.status == "CHO_BAN_GIAO", Loan.pickup_deadline > domain.now()),
         )
         conflict = exists(
             select(Loan.id).where(
@@ -128,7 +128,7 @@ def detail(asset_id: int, db: Db, actor: Actor):
     result = asset_view(asset)
     calendar = []
     for loan in reservations(db, asset_id):
-        if loan.status == "DA_DUYET" and loan.pickup_deadline <= domain.now():
+        if loan.status == "CHO_BAN_GIAO" and loan.pickup_deadline <= domain.now():
             continue
         if blocked_end(loan) < domain.now() and loan.status not in domain.HOLDING:
             continue

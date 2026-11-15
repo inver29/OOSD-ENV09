@@ -45,10 +45,9 @@ export function Badge({
           "CHO_THU_HOI",
           "CHO_XAC_NHAN",
           "CHO_BAN_GIAO",
-          "DA_DUYET",
         ].includes(status)
       ? "amber"
-      : ["CHO_CHIA_SE", "DA_DONG", "HOAN_TAT", "DA_XAC_MINH"].includes(status)
+      : ["CHO_CHIA_SE", "DA_HOAN_TRA", "HOAN_TAT", "DA_XAC_MINH"].includes(status)
         ? "green"
         : ["DANG_MUON", "DA_DUOC_MUON"].includes(status)
           ? "blue"

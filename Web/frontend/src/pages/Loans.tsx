@@ -10,7 +10,12 @@ import LoanTable from "../components/LoanTable";
 import QuickReview from "../components/QuickReview";
 export default function Loans({ manage = false }: { manage?: boolean }) {
   const [params, setParams] = useSearchParams();
-  const requestedStatus = params.get("status") || "";
+  const queryStatus = params.get("status") || "";
+  const oldStatuses: Record<string, string> = {
+    DA_DUYET: "CHO_BAN_GIAO",
+    DA_DONG: "DA_HOAN_TRA",
+  };
+  const requestedStatus = oldStatuses[queryStatus] ?? queryStatus;
   const status = loanStates.includes(requestedStatus) ? requestedStatus : "";
   const [search, setSearch] = useState(""),
     [page, setPage] = useState(1);

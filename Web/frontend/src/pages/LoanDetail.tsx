@@ -112,7 +112,7 @@ export default function LoanDetail() {
             )}
             <div className="inline-actions">
               {(manager || borrower) &&
-                ["CHO_DUYET", "DA_DUYET"].includes(n.status) && (
+                ["CHO_DUYET", "CHO_BAN_GIAO"].includes(n.status) && (
                   <button
                     className="btn secondary"
                     onClick={() => setAction("cancel")}

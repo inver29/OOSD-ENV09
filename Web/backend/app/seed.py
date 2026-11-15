@@ -215,9 +215,9 @@ def seed_demo(db, config, include_images=True):
                 min(start + timedelta(hours=24), end),
                 2,
             )
-        if status in domain.HOLDING | {"DA_DONG"}:
+        if status in domain.HOLDING | {"DA_HOAN_TRA"}:
             item.handed_at = start + timedelta(minutes=10)
-        if status == "DA_DONG":
+        if status == "DA_HOAN_TRA":
             item.returned_at = end - timedelta(hours=1)
         db.add(item)
         db.flush()
@@ -265,7 +265,7 @@ def seed_demo(db, config, include_images=True):
         users["an"],
         stamp - timedelta(hours=1),
         stamp + timedelta(days=2),
-        "DA_DUYET",
+        "CHO_BAN_GIAO",
     )
     loan(
         assets[2],
@@ -303,7 +303,7 @@ def seed_demo(db, config, include_images=True):
         )
         db.add(need)
         db.flush()
-        loan(assets[6], users["chi"], start, end, "DA_DONG", need)
+        loan(assets[6], users["chi"], start, end, "DA_HOAN_TRA", need)
         db.add(
             Verification(
                 need_id=need.id,

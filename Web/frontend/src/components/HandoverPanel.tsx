@@ -161,7 +161,7 @@ export default function HandoverPanel({
     borrower = user?.id === loan.borrower_id;
   const active =
     kind === "GIAO"
-      ? loan.status === "DA_DUYET"
+      ? loan.status === "CHO_BAN_GIAO"
       : ["DANG_MUON", "CHO_XAC_NHAN_TRA"].includes(loan.status);
   const canPrepare =
     active &&

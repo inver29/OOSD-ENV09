@@ -143,7 +143,7 @@ Chỉ số chỉ đánh giá các lượt đã mượn–trả, không đại di
 
 ## 5. Dữ liệu và cấu trúc mã
 
-Script cài mới `sql/001_schema.sql` có 13 bảng, 106 cột và 24 khóa ngoại. Bản `ENV09.sql` ở thư mục đồ án dùng cùng nội dung. Bảng `ThongBaoThuHoi` lưu mã người nhận, mã phiếu tại lúc thu hồi, tên tài sản, lý do và thời điểm đọc. Mã phiếu được lưu để tra cứu sau khi phiếu chưa bàn giao đã bị xóa. Để nâng cấp dữ liệu cũ, chạy `python -m backend.app.bootstrap` với cấu hình của dự án. Các script 002–008 áp dụng thay đổi theo phiên bản và giữ hồ sơ đã bàn giao.
+Script cài mới `sql/001_schema.sql` có 13 bảng, 106 cột và 24 khóa ngoại. Bản `ENV09.sql` ở thư mục đồ án dùng cùng nội dung. Bảng `ThongBaoThuHoi` lưu mã người nhận, mã phiếu tại lúc thu hồi, tên tài sản, lý do và thời điểm đọc. Mã phiếu được lưu để tra cứu sau khi phiếu chưa bàn giao đã bị xóa. Để nâng cấp dữ liệu cũ, chạy `python -m backend.app.bootstrap` với cấu hình của dự án. Các script 002–009 áp dụng thay đổi theo phiên bản và giữ hồ sơ đã bàn giao.
 
 | Nhóm | Bảng |
 |---|---|
@@ -175,6 +175,8 @@ Web/
 ```
 
 Ảnh vừa chọn được xem trước ngay trong form; nút Xem ảnh/Xem chứng từ mở popup tại trang hiện tại. PDF được hiển thị trong khung cùng nguồn.
+
+Với cơ sở dữ liệu từ bản cũ, chạy lệnh `.venv\Scripts\python.exe -m backend.app.bootstrap` trong `Web` trước khi khởi động. Migration 009 đổi mã phiếu mượn hiện có và giữ lịch sử.
 
 Trạng thái Chờ bàn giao/Đã được mượn được xác định từ phiếu hiện hành; `TaiSan.TrangThai` giữ trạng thái vòng đời. Khi hủy/đóng phiếu, nhãn hiển thị và danh sách tự đồng bộ, không cần thêm bảng/cột/FK.
 

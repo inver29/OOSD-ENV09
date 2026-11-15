@@ -152,7 +152,7 @@ def test_expiry_transition_keeps_asset_and_loan_status_consistent(env):
     # The worker has not marked the voucher expired yet: both surfaces still show waiting.
     path = f"/api/loans/{loan['id']}"
     before = member.get(path).json()
-    assert before["status"] == "DA_DUYET" and before["asset"]["status"] == "CHO_BAN_GIAO"
+    assert before["status"] == "CHO_BAN_GIAO" and before["asset"]["status"] == "CHO_BAN_GIAO"
     assert loan["asset_id"] not in shared_ids(member)
     assert member.post("/api/loans", json=request_data(env)).status_code == 409
     record = manager.post(

@@ -54,7 +54,7 @@ def detail(need_id: int, db: Db, actor: Actor):
     need = get_or_404(db, Need, need_id)
     domain.require(can_read_need(actor, need), "Không tìm thấy nhu cầu.", 404)
     domain.require(
-        db.scalar(select(Loan.id).where(Loan.need_id == need.id, Loan.status == "DA_DONG").limit(1))
+        db.scalar(select(Loan.id).where(Loan.need_id == need.id, Loan.status == "DA_HOAN_TRA").limit(1))
         is not None,
         "Không tìm thấy nhu cầu.",
         404,

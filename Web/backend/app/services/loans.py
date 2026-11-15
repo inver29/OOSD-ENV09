@@ -150,7 +150,7 @@ def decide(db, actor, loan_id, data):
         )
         require_no_checkout(db, asset.id, loan.id)
         loan.status, loan.pickup_deadline, loan.buffer_hours = (
-            "DA_DUYET",
+            "CHO_BAN_GIAO",
             deadline,
             loan.policy.buffer_hours,
         )
@@ -225,7 +225,7 @@ def expire_due(sessions):
         ids = list(
             db.scalars(
                 select(Loan.id)
-                .where(Loan.status == "DA_DUYET", Loan.pickup_deadline <= domain.now())
+                .where(Loan.status == "CHO_BAN_GIAO", Loan.pickup_deadline <= domain.now())
                 .order_by(Loan.asset_id, Loan.id)
             )
         )
@@ -234,7 +234,7 @@ def expire_due(sessions):
             with sessions.begin() as db:
                 asset, loan = loan_context(db, loan_id)
                 if (
-                    loan.status == "DA_DUYET"
+                    loan.status == "CHO_BAN_GIAO"
                     and loan.handed_at is None
                     and loan.pickup_deadline <= domain.now()
                 ):

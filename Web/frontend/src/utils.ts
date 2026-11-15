@@ -11,13 +11,12 @@ export const labels: Record<string, string> = {
   DA_THU_HOI: "Đã thu hồi",
   THU_HOI: "Thu hồi tài sản",
   CHO_DUYET: "Chờ duyệt",
-  DA_DUYET: "Chờ bàn giao",
   TU_CHOI: "Từ chối",
   DA_HUY: "Đã hủy",
   HET_HAN_NHAN: "Hết hạn nhận",
   DANG_MUON: "Đang mượn",
   CHO_XAC_NHAN_TRA: "Chờ xác nhận trả",
-  DA_DONG: "Đã hoàn trả",
+  DA_HOAN_TRA: "Đã hoàn trả",
   CHO_XAC_MINH: "Chờ xác minh",
   DA_XAC_MINH: "Đã xác minh",
   CHO_XAC_NHAN: "Chờ xác nhận",
@@ -63,11 +62,11 @@ export const errorText = (e: unknown) =>
   e instanceof Error ? e.message : "Có lỗi xảy ra. Vui lòng thử lại.";
 export const openStates = [
   "CHO_DUYET",
-  "DA_DUYET",
+  "CHO_BAN_GIAO",
   "DANG_MUON",
   "CHO_XAC_NHAN_TRA",
 ];
-export const loanStageStates = [...openStates, "DA_DONG"];
+export const loanStageStates = [...openStates, "DA_HOAN_TRA"];
 export const loanStates = [
   ...loanStageStates,
   "TU_CHOI",

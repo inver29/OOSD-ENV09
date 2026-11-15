@@ -79,7 +79,7 @@ def test_requested_withdrawal_finishes_only_after_both_return_signatures(env, co
     assert confirm(manager, loan, tra.json()).status_code == 200
     assert manager.get(path).status_code == 404
     retained = member.get(f"/api/loans/{loan['id']}").json()
-    assert retained["status"] == "DA_DONG" and retained["asset"]["status"] == "DA_THU_HOI"
+    assert retained["status"] == "DA_HOAN_TRA" and retained["asset"]["status"] == "DA_THU_HOI"
     with env["sessions"]() as db:
         assert db.get(Asset, loan["asset_id"]).withdrawn
         assert db.get(Loan, loan["id"]).returned_at

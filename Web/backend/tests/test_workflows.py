@@ -189,7 +189,7 @@ def test_two_concurrent_approvals_only_one_reservation(env):
         env["login"](username).get(f"/api/loans/{loan['id']}").json()
         for username, loan in (("an", first), ("binh", second))
     ]
-    assert sorted(row["status"] for row in statuses) == ["DA_DUYET", "TU_CHOI"]
+    assert sorted(row["status"] for row in statuses) == ["CHO_BAN_GIAO", "TU_CHOI"]
     assert (
         next(row for row in statuses if row["status"] == "TU_CHOI")["reason"]
         == "Đã có người khác mượn tài sản này"
@@ -199,7 +199,7 @@ def test_two_concurrent_approvals_only_one_reservation(env):
             db.scalar(
                 select(func.count())
                 .select_from(Loan)
-                .where(Loan.id.in_([first["id"], second["id"]]), Loan.status == "DA_DUYET")
+                .where(Loan.id.in_([first["id"], second["id"]]), Loan.status == "CHO_BAN_GIAO")
             )
             == 1
         )
@@ -259,7 +259,7 @@ def test_cannot_deliver_early_and_stale_record_confirmation(env):
     assert edited["giver_confirmed_at"] is None and edited["receiver_confirmed_at"] is None
     assert confirm(member, loan, first).status_code == 409
     assert confirm(member, loan, edited).status_code == 200
-    assert member.get(f"/api/loans/{loan['id']}").json()["status"] == "DA_DUYET"
+    assert member.get(f"/api/loans/{loan['id']}").json()["status"] == "CHO_BAN_GIAO"
     assert confirm(manager, loan, edited).status_code == 200
     assert member.get(f"/api/loans/{loan['id']}").json()["status"] == "DANG_MUON"
 
@@ -272,7 +272,7 @@ def test_damaged_return_closes_and_pauses_atomically(env):
     assert member.get(f"/api/loans/{loan['id']}").json()["status"] == "CHO_XAC_NHAN_TRA"
     assert confirm(manager, loan, record).status_code == 200
     with env["sessions"]() as db:
-        assert db.get(Loan, loan["id"]).status == "DA_DONG"
+        assert db.get(Loan, loan["id"]).status == "DA_HOAN_TRA"
         assert db.get(Asset, loan["asset_id"]).status == "BAO_TRI"
         assert db.scalar(
             select(LifecycleEvent.id).where(
@@ -572,7 +572,7 @@ def test_evaluation_resolves_affected_pending_vouchers(env):
     with env["sessions"]() as db:
         assert not db.scalar(
             select(Loan.id).where(
-                Loan.asset_id == asset_id, Loan.status.in_({"CHO_DUYET", "DA_DUYET"})
+                Loan.asset_id == asset_id, Loan.status.in_({"CHO_DUYET", "CHO_BAN_GIAO"})
             )
         )
 

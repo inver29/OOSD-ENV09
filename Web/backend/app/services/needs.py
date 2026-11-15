@@ -36,12 +36,12 @@ def save_need(db, actor, data):
 
 
 def completed_need(need_id=Need.id):
-    return exists(select(Loan.id).where(Loan.need_id == need_id, Loan.status == "DA_DONG"))
+    return exists(select(Loan.id).where(Loan.need_id == need_id, Loan.status == "DA_HOAN_TRA"))
 
 
 def require_completed(db, need):
     domain.require(
-        db.scalar(select(Loan.id).where(Loan.need_id == need.id, Loan.status == "DA_DONG").limit(1))
+        db.scalar(select(Loan.id).where(Loan.need_id == need.id, Loan.status == "DA_HOAN_TRA").limit(1))
         is not None,
         "Nhu cầu chỉ được xử lý sau khi hoàn tất hoàn trả tài sản.",
         409,

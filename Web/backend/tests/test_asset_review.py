@@ -194,7 +194,7 @@ def test_withdraw_keeps_closed_vouchers_and_indicator(env):
     reviewer = env["login"]("ql.hn")
     need = reviewer.get("/api/needs?scope=manage").json()["items"][-1]
     linked = reviewer.get(f"/api/needs/{need['id']}").json()["loans"]
-    assert linked and reviewer.get(f"/api/loans/{linked[0]['id']}").json()["status"] == "DA_DONG"
+    assert linked and reviewer.get(f"/api/loans/{linked[0]['id']}").json()["status"] == "DA_HOAN_TRA"
     now = env["clock"][0]
     result = reviewer.get(
         "/api/reports/avoidance",

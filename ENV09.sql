@@ -1,5 +1,3 @@
--- ENV-09: chia se va tai su dung tai san giua cac don vi.
--- Script tao moi; khong xoa hay ghi de co so du lieu dang co.
 CREATE DATABASE ENV09;
 GO
 USE ENV09;
@@ -190,11 +188,11 @@ CREATE TABLE PhieuMuon (
     CONSTRAINT CK_PhieuMuon_NguoiDuyet CHECK (
         MaNguoiDuyet IS NULL OR MaNguoiDuyet <> MaNguoiMuon),
     CONSTRAINT CK_PhieuMuon_TrangThai CHECK (
-        TrangThai IN (N'CHO_DUYET', N'DA_DUYET', N'TU_CHOI', N'DA_HUY', N'HET_HAN_NHAN', N'DANG_MUON', N'CHO_XAC_NHAN_TRA', N'DA_DONG')),
+        TrangThai IN (N'CHO_DUYET', N'CHO_BAN_GIAO', N'TU_CHOI', N'DA_HUY', N'HET_HAN_NHAN', N'DANG_MUON', N'CHO_XAC_NHAN_TRA', N'DA_HOAN_TRA')),
     CONSTRAINT CK_PhieuMuon_DuPhong CHECK (
         GioDuPhongApDung IS NULL OR GioDuPhongApDung >= 0),
     CONSTRAINT CK_PhieuMuon_DaDuyet CHECK (
-        TrangThai NOT IN (N'DA_DUYET', N'DANG_MUON', N'CHO_XAC_NHAN_TRA', N'DA_DONG') OR (MaNguoiDuyet IS NOT NULL AND DuyetLuc IS NOT NULL AND HanNhan IS NOT NULL AND GioDuPhongApDung IS NOT NULL)),
+        TrangThai NOT IN (N'CHO_BAN_GIAO', N'DANG_MUON', N'CHO_XAC_NHAN_TRA', N'DA_HOAN_TRA') OR (MaNguoiDuyet IS NOT NULL AND DuyetLuc IS NOT NULL AND HanNhan IS NOT NULL AND GioDuPhongApDung IS NOT NULL)),
     CONSTRAINT CK_PhieuMuon_HanNhan CHECK (
         HanNhan IS NULL OR (HanNhan > BatDau AND HanNhan <= KetThuc)),
     CONSTRAINT CK_PhieuMuon_Giao CHECK (
@@ -202,9 +200,9 @@ CREATE TABLE PhieuMuon (
     CONSTRAINT CK_PhieuMuon_Tra CHECK (
         TraLuc IS NULL OR (GiaoLuc IS NOT NULL AND TraLuc >= GiaoLuc)),
     CONSTRAINT CK_PhieuMuon_DangMuon CHECK (
-        TrangThai NOT IN (N'DANG_MUON', N'CHO_XAC_NHAN_TRA', N'DA_DONG') OR GiaoLuc IS NOT NULL),
+        TrangThai NOT IN (N'DANG_MUON', N'CHO_XAC_NHAN_TRA', N'DA_HOAN_TRA') OR GiaoLuc IS NOT NULL),
     CONSTRAINT CK_PhieuMuon_DaDong CHECK (
-        TrangThai <> N'DA_DONG' OR TraLuc IS NOT NULL)
+        TrangThai <> N'DA_HOAN_TRA' OR TraLuc IS NOT NULL)
 );
 GO
 
@@ -279,7 +277,6 @@ CREATE INDEX IX_SuKien_TaiSan
     ON SuKienVongDoi(MaTaiSan, GhiLuc);
 GO
 
--- MaPhieuMuon is a snapshot because withdrawal deletes the original loan.
 CREATE TABLE dbo.ThongBaoThuHoi (
     MaThongBao INT IDENTITY(1,1) NOT NULL,
     MaNguoiNhan INT NOT NULL,

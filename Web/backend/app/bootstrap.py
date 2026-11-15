@@ -40,6 +40,7 @@ def initialize(config=settings):
                 "006_unified_withdrawal.sql",
                 "007_single_account_role.sql",
                 "008_withdrawal_notifications.sql",
+                "009_loan_status_codes.sql",
             ):
                 connection.exec_driver_sql(
                     (ROOT / "sql" / migration).read_text(encoding="utf-8-sig")

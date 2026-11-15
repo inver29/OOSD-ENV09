@@ -32,7 +32,7 @@ export default function NeedDetail() {
   if (!n) return <ErrorBox message={error} />;
   const mine = n.creator_id === user?.id,
     manager = n.unit_id === user?.unit_id && user?.roles.includes("QUAN_LY"),
-    completed = !!n.loans?.some((l) => l.status === "DA_DONG");
+    completed = !!n.loans?.some((l) => l.status === "DA_HOAN_TRA");
   const canVerify = manager && !mine && completed && n.status !== "NHAP";
   const saved = () => {
     reload();

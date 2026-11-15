@@ -8,7 +8,7 @@ from .common import blocked_end, event, loan_context, locked, reservations, uplo
 
 def check_delivery(db, asset, loan):
     stamp = domain.now()
-    domain.require(loan.status == "DA_DUYET", "Phiếu không còn ở trạng thái Chờ bàn giao.", 409)
+    domain.require(loan.status == "CHO_BAN_GIAO", "Phiếu không còn ở trạng thái Chờ bàn giao.", 409)
     domain.require(
         loan.start_at <= stamp < loan.pickup_deadline,
         "Chưa đến thời gian mượn hoặc đã hết hạn nhận.",
@@ -182,7 +182,7 @@ def confirm(db, actor, loan_id, report_id, version):
             )
         else:
             withdrawing = asset.status == "CHO_THU_HOI"
-            loan.status, loan.returned_at = "DA_DONG", domain.now()
+            loan.status, loan.returned_at = "DA_HOAN_TRA", domain.now()
             if report.condition == "Hư hỏng":
                 asset.status = "BAO_TRI"
                 asset.condition = report.content[:500]
@@ -219,7 +219,7 @@ def cancel_report(db, actor, loan_id, report_id, version):
         409,
     )
     domain.require(report.version == version, "Biên bản đã thay đổi.", 409)
-    domain.require(loan.status in {"DA_DUYET", "CHO_XAC_NHAN_TRA"}, "Phiếu không còn phù hợp.", 409)
+    domain.require(loan.status in {"CHO_BAN_GIAO", "CHO_XAC_NHAN_TRA"}, "Phiếu không còn phù hợp.", 409)
     report.status = "DA_HUY"
     report.version += 1
     report.giver_confirmed_at = report.receiver_confirmed_at = None

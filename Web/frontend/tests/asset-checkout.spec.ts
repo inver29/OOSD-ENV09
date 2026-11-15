@@ -110,7 +110,7 @@ test("Ảnh hiện ngay, quản lý thêm tự duyệt, duyệt mượn ẩn tà
     page.locator(".badge").filter({ hasText: "Chờ bàn giao" }).first(),
   ).toBeVisible();
   await expect(page.locator(".loan-progress .done")).toHaveCount(2);
-  await page.goto("/review?status=DA_DUYET");
+  await page.goto("/review?status=CHO_BAN_GIAO");
   await expect(page.locator(".status-tabs .active")).toHaveText("Chờ bàn giao");
   await expect(
     page.getByLabel("Lọc trạng thái").locator("option:checked"),
@@ -126,7 +126,7 @@ test("Ảnh hiện ngay, quản lý thêm tự duyệt, duyệt mượn ẩn tà
   await expect(page).toHaveURL(/status=CHO_DUYET/);
   await expect(page.locator(".status-tabs .active")).toHaveText("Chờ duyệt");
   await page.getByRole("button", { name: "Chờ bàn giao", exact: true }).click();
-  await expect(page).toHaveURL(/status=DA_DUYET/);
+  await expect(page).toHaveURL(/status=CHO_BAN_GIAO/);
   await expect(
     page.getByLabel("Lọc trạng thái").locator("option:checked"),
   ).toHaveText("Chờ bàn giao");

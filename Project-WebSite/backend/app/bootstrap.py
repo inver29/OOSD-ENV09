@@ -1,4 +1,4 @@
-"""Tạo database mới và áp dụng SQL gốc; không xóa dữ liệu đang có."""
+"""Khởi tạo database ENV09 từ tập lệnh SQL."""
 
 import argparse
 import re
@@ -7,7 +7,7 @@ from sqlalchemy import inspect, text
 
 from .config import ROOT, settings
 from .db import make_engine, session_factory
-from .models import Base, WithdrawalNotice
+from .models import Base
 
 
 def initialize(config=settings):
@@ -21,39 +21,32 @@ def initialize(config=settings):
                 connection.exec_driver_sql(f"CREATE DATABASE [{config.db_name}]")
     finally:
         master.dispose()
-    script = (ROOT / "SQL" / "ENV09.sql").read_text(encoding="utf-8-sig")
-    schema, upgrades = script.split("\n-- NANG CAP DATABASE CU\n", maxsplit=1)
-    go = re.compile(r"^[ \t]*GO[ \t]*$", re.MULTILINE | re.IGNORECASE)
     engine = make_engine(config)
     try:
         with engine.begin() as connection:
             inspector = inspect(connection)
             existing = set(inspector.get_table_names(schema="dbo"))
             expected = set(Base.metadata.tables)
-            if existing & expected:
-                required = expected - {WithdrawalNotice.__tablename__}
-                if not required <= existing:
-                    raise RuntimeError("Database có một phần cấu trúc ENV09. Hãy kiểm tra các bảng hiện có.")
-                batches = go.split(upgrades)
-            else:
+            if expected.isdisjoint(existing):
+                script = (ROOT / "SQL" / "ENV09.sql").read_text(encoding="utf-8-sig")
+                batches = re.split(r"^[ \t]*GO[ \t]*$", script, flags=re.MULTILINE | re.IGNORECASE)
                 # CREATE DATABASE and USE are for SSMS. This connection uses APP_DB_NAME.
-                batches = go.split(schema)[2:]
+                for batch in batches[2:]:
+                    if batch.strip():
+                        connection.exec_driver_sql(batch)
+            elif not expected <= existing:
+                raise RuntimeError("Database thiếu bảng ENV09. Dùng APP_DB_NAME mới để cài lại.")
 
-            # Keep pyodbc from closing a batch after the first DML row count.
-            nocount_was_on = connection.exec_driver_sql("SELECT @@OPTIONS & 512").scalar_one()
-            if not nocount_was_on:
-                connection.exec_driver_sql("SET NOCOUNT ON")
-            for batch in batches:
-                if batch.strip():
-                    connection.exec_driver_sql(batch)
-            if not nocount_was_on:
-                connection.exec_driver_sql("SET NOCOUNT OFF")
-
-            inspector.clear_cache()
             for name, table in Base.metadata.tables.items():
                 actual = {column["name"] for column in inspector.get_columns(name, schema="dbo")}
                 if actual != {column.name for column in table.columns}:
-                    raise RuntimeError(f"Cấu trúc bảng {name} không khớp với ENV09.sql.")
+                    raise RuntimeError(f"Bảng {name} khác ENV09.sql. Dùng APP_DB_NAME mới để cài lại.")
+
+            status_rule = connection.exec_driver_sql(
+                "SELECT OBJECT_DEFINITION(OBJECT_ID(N'dbo.CK_PhieuMuon_TrangThai'))"
+            ).scalar_one() or ""
+            if "CHO_BAN_GIAO" not in status_rule or "DA_HOAN_TRA" not in status_rule:
+                raise RuntimeError("Database dùng mã phiếu mượn cũ. Dùng APP_DB_NAME mới để cài lại.")
     except Exception:
         engine.dispose()
         raise

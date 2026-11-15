@@ -144,13 +144,14 @@ Chỉ số chỉ đánh giá các lượt đã mượn–trả, không đại di
 
 ## 5. Dữ liệu và cấu trúc mã
 
-Tập lệnh `ENV09.sql` tạo 13 bảng, 106 cột và 24 khóa ngoại. Khi tạo database `ENV09` lần đầu, mở tệp trong SSMS và chạy toàn bộ. Với database đã có hoặc tên khác `ENV09`, chạy `.venv\Scripts\python.exe -m backend.app.bootstrap` để áp dụng phần tương ứng cho `APP_DB_NAME`. Bảng `ThongBaoThuHoi` lưu mã phiếu tại lúc thu hồi để người mượn tra cứu ngay cả khi phiếu chưa bàn giao đã bị xóa. [ENV09.sql](SQL/ENV09.sql)
+Tập lệnh `ENV09.sql` tạo 13 bảng, 106 cột và 24 khóa ngoại. Khi tạo database `ENV09` lần đầu, mở tệp trong SSMS và chạy toàn bộ. Để cài lại demo, đặt `APP_DB_NAME` thành tên database mới trong `.env` rồi chạy `.venv\Scripts\python.exe -m backend.app.bootstrap --seed`. [ENV09.sql](SQL/ENV09.sql)
 
 | Nhóm | Bảng |
 |---|---|
 | Tổ chức, quyền | `DonVi`, `NguoiDung`, `PhanQuyen` |
 | Tài sản | `LoaiTaiSan`, `DiaDiem`, `TaiSan`, `SuKienVongDoi` |
 | Mượn và giao nhận | `ChinhSachMuon`, `PhieuMuon`, `BienBanGiaoNhan` |
+| Thông báo thu hồi | `ThongBaoThuHoi` |
 | Đánh giá tránh mua mới | `NhuCauMuaMoi`, `XacMinhNhuCau` |
 
 ```text
@@ -169,12 +170,12 @@ Project-WebSite/
 │   ├── components/   # Biểu mẫu và thành phần dùng chung
 │   ├── api.ts        # Fetch, lỗi và CSRF
 │   └── styles.css    # Giao diện và bố cục điện thoại
-└── SQL/ENV09.sql      # Tạo mới và nâng cấp SQL Server
+└── SQL/ENV09.sql      # Tạo database SQL Server và các bảng
 ```
 
 Ảnh vừa chọn được xem trước ngay trong form; nút Xem ảnh/Xem chứng từ mở popup tại trang hiện tại. PDF được hiển thị trong khung cùng nguồn.
 
-Phần nâng cấp trong `ENV09.sql` đổi các mã phiếu mượn cũ sang mã hiện hành và giữ lịch sử.
+Bảng `ThongBaoThuHoi` lưu mã phiếu tại lúc thu hồi để người mượn tra cứu ngay cả khi phiếu chưa bàn giao đã bị xóa.
 
 Trạng thái Chờ bàn giao/Đã được mượn được xác định từ phiếu hiện hành; `TaiSan.TrangThai` giữ trạng thái vòng đời. Khi hủy/đóng phiếu, nhãn hiển thị và danh sách tự đồng bộ, không cần thêm bảng/cột/FK.
 
@@ -216,6 +217,6 @@ Phiên đăng nhập đang lưu trong bộ nhớ một tiến trình để giữ
 
 Địa chỉ trong bộ dữ liệu mẫu chỉ dùng minh họa, cần cập nhật thành địa chỉ tổ chức thực tế. Nguồn của 12 ảnh tài sản được ghi trong [sources.json](backend/demo_images/sources.json).
 
-Bản rút gọn dùng hai phương án **Mua mới/Hoãn nhu cầu sử dụng**; chỉ số dựa trên khai báo ban đầu, kết quả sử dụng và xác minh của quản lý. Form nhu cầu/xác minh không có tệp căn cứ; đánh giá vòng đời không bắt buộc căn cứ riêng. Phần nâng cấp trong `ENV09.sql` cập nhật các ràng buộc và giữ dữ liệu lịch sử.
+Bản rút gọn dùng hai phương án **Mua mới/Hoãn nhu cầu sử dụng**. Chỉ số dựa trên khai báo ban đầu, kết quả sử dụng và xác minh của quản lý. Form nhu cầu và xác minh đã bỏ phần đính kèm tệp căn cứ. Đánh giá vòng đời dùng nội dung ghi nhận và quyết định xử lý.
 
 Trang quản trị có tìm kiếm tự động (hỗ trợ không dấu), lọc tài khoản theo đơn vị/vai trò/trạng thái, lọc danh mục theo trạng thái/đơn vị và lọc chính sách theo hiệu lực. Đổi mục xóa bộ lọc cũ; có số kết quả và Xóa bộ lọc.

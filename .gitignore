@@ -12,3 +12,6 @@
 *.mdf
 *.ndf
 *.ldf
+
+# Visual Studio
+.vs/
